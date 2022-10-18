@@ -22,10 +22,12 @@ player_two_buttons: .res 1
 .endproc
 
 .import reset_handler
+.import poll_controllers
 .export main
 .proc main
-do_nothing:
-    JMP do_nothing
+main_loop:
+    JSR poll_controllers
+    JMP main_loop
 .endproc
 
 .segment "VECTORS"
