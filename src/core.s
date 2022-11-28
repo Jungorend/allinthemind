@@ -51,7 +51,7 @@ main_loop:
     JSR poll_controllers
     ;; Some basic testing initialization will put render player 1 at middle position
     ;; with fighter one sprites
-    LDX #$77
+    LDX #$37
     STX player_one_x
     STX player_one_y
     LDX #$0                     ; idle pose
