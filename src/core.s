@@ -25,7 +25,6 @@ player_two_facing:  .res 1
     LDA #$02
     STA OAMDMA                  ; Copy graphics to OAM once a frame
     LDA #$00
-
     RTI
 .endproc
 
@@ -43,30 +42,41 @@ palette_loop:
     LDA palette,X
     STA PPUDATA
     INX
-    CPX #$10
+    CPX #$20
     BNE palette_loop
-
-
-main_loop:
-    JSR poll_controllers
     ;; Some basic testing initialization will put render player 1 at middle position
     ;; with fighter one sprites
-    LDX #$37
+    LDX #$40
     STX player_one_x
     STX player_one_y
     LDX #$0                     ; idle pose
     STX player_one_state
     STX player_one_facing       ; face right
-    JMP draw_player_one
+    JSR draw_player_one
+vblankwait:
+    BIT PPUSTATUS
+    BPL vblankwait
+    LDA #%10110000
+    STA PPUCTRL
+    LDA #%00011110
+    STA PPUMASK
+
+main_loop:
+    JSR poll_controllers
     JMP main_loop
 .endproc
 
 .proc draw_player_one
     ;; store tile numbers
     LDX #$00
+    STX $0202
+    STX $0206
+    STX $020a
     STX $0201
     INX
+    INX
     STX $0205
+    INX
     INX
     STX $0209
     LDA player_one_y
@@ -77,10 +87,12 @@ main_loop:
     LDA player_one_x
     SBC #$0c
     STA $0203
+    CLC
     ADC #$08
     STA $0207
     ADC #$08
     STA $020b
+    RTS
 
 .endproc
 
